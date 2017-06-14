@@ -1,0 +1,13 @@
+bin/*
+docker-compose.override.yml
+doc/gapfish
+doc/data/*
+doc/__pycache__/*
+doc/.ipynb_checkpoints/*
+tmp/*
+!tmp/.gitkeep
+codeship.aes
+.env*
+!.env.sample
+!.env.codeship.encrypted
+credentials/*

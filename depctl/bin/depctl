@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+mkdir -p $HOME/.deployer
+
+docker run \
+  -it \
+  --rm \
+  -v $HOME/.deployer:/mnt \
+  -v $PWD:/mnt/pwd$PWD \
+  -e PWD=/mnt/pwd$PWD \
+  -e USER_HOME=$HOME \
+  -e TERM=$TERM \
+  gapfish/depctl \
+  "${@}"

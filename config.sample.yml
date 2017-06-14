@@ -1,0 +1,4 @@
+repositories:
+  - name: cool_app
+    github: schasse/cool_app
+    kube_resource: kubernetes

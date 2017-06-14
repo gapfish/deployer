@@ -1,0 +1,52 @@
+- type: parallel
+  steps:
+    - name: test_deployer
+      service: deployer
+      command: rspec
+
+    - name: run code quality metrics tools
+      service: ruby_code_quality_metrics
+      command: ruby
+
+- type: parallel
+  steps:
+    - name: push_deployer
+      service: deployer
+      type: push
+      image_name: gapfish/deployer
+      image_tag: "{{ .Branch }}-{{ .CommitID }}"
+      registry: https://index.docker.io/v1/
+      encrypted_dockercfg_path: dockercfg.codeship.encrypted
+
+    - name: push_deployer_latest
+      service: deployer
+      type: push
+      image_name: gapfish/deployer
+      tag: master
+      image_tag: latest
+      registry: https://index.docker.io/v1/
+      encrypted_dockercfg_path: dockercfg.codeship.encrypted
+
+    - name: push_depctl
+      service: depctl
+      type: push
+      image_name: gapfish/depctl
+      image_tag: "{{ .Branch }}-{{ .CommitID }}"
+      registry: https://index.docker.io/v1/
+      encrypted_dockercfg_path: dockercfg.codeship.encrypted
+
+    - name: push_depctl_latest
+      service: depctl
+      type: push
+      image_name: gapfish/depctl
+      tag: master
+      image_tag: latest
+      registry: https://index.docker.io/v1/
+      encrypted_dockercfg_path: dockercfg.codeship.encrypted
+
+- type: parallel
+  steps:
+    - name: deploy deployer
+      service: curl
+      tag: master
+      command: "sh -c 'curl --data commit=master\\&tag=$CI_BRANCH\\-$CI_COMMIT_ID https://$DEPLOYER_CREDS@deployer.k8s.gapfish.com/deployer/deploy'"

@@ -1,0 +1,25 @@
+# ignore everything
+*
+
+# but
+!Gemfile
+!Gemfile.lock
+!vendor/cache/*
+
+!.pryrc
+!.env.sample
+!config.yml
+!plugins.rb
+!config.ru
+
+!lib/*
+!bin/*
+!views/*
+!config/*
+!spec/*
+!tmp/*
+
+!.git/refs/heads/*
+!.git/HEAD
+
+!depctl

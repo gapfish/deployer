@@ -1,0 +1,10 @@
+version: "2"
+services:
+  deployer:
+    build: .
+    image: gapfish/deployer
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/deployer
+      - $HOME/.bash_history:/.bash_history

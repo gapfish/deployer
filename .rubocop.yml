@@ -1,0 +1,37 @@
+AllCops:
+  Include:
+    - 'Rakefile'
+    - 'Gemfile'
+    - '**/config.ru'
+  Exclude:
+      - 'tmp/**/*'
+      - 'doc/**/*'
+      - 'bin/*'
+      - 'vendor/cache/**/*'
+      - 'depctl/lib/trollop.rb'
+  TargetRubyVersion: 2.4
+
+Style/Documentation:
+  Enabled: false
+
+Style/DotPosition:
+  EnforcedStyle: trailing
+
+Metrics/BlockLength:
+  Exclude:
+    - '**/*_spec.rb'
+
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/MethodLength:
+  CountComments: false
+  Max: 18
+
+Style/ConstantName:
+  Exclude:
+    - 'config/*'
+
+Style/PredicateName:
+  Exclude:
+    - '**/*_spec.rb'

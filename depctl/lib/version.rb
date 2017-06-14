@@ -1,0 +1,1 @@
+../../lib/shared/version.rb

@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: deployer
+  labels:
+    app: deployer
+    env: production
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: deployer
+        env: production
+    spec:
+      containers:
+      - name: deployer
+        image: gapfish/deployer
+        env:
+        - name: RACK_ENV
+          value: production
+        - name: VERBOSE
+          value: "true"
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: env
+          mountPath: /deployer/.env
+          subPath: .env
+        resources:
+          requests:
+            memory: 100Mi
+      volumes:
+      - name: env
+        secret:
+          secretName: deployer-env

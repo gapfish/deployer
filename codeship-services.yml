@@ -1,0 +1,22 @@
+deployer:
+  build:
+    image: gapfish/deployer
+    cached: true
+    dockerfile_path: Dockerfile
+  environment:
+    - RACK_ENV=test
+
+depctl:
+  build:
+    image: gapfish/depctl
+    cached: true
+    dockerfile_path: depctl/Dockerfile
+
+ruby_code_quality_metrics:
+  image: gewo/ruby-code-quality-metrics
+  volumes:
+    - .:/app
+
+curl:
+  image: appropriate/curl
+  encrypted_env_file: .env.codeship.encrypted
