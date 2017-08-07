@@ -130,6 +130,14 @@ class Env
     "#{branch}-#{current_commit}"
   end
 
+  def self.current_commit
+    `git rev-parse HEAD`.strip
+  end
+
+  def self.branch
+    `git rev-parse --abbrev-ref HEAD`.strip
+  end
+
   def self.depctl_version
     Version.as_string
   end
