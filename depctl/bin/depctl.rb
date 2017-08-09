@@ -176,7 +176,7 @@ class Api
     def request(method, path)
       uri = URI.parse(endpoint + path)
       http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if is_https
+      http.use_ssl = true if https?
       case method
       when :get
         request = Net::HTTP::Get.new(uri.request_uri, info_headers)
@@ -190,7 +190,7 @@ class Api
       wait_for { http.request(request) }
     end
 
-    def is_https
+    def https?
       return true if URI.parse(endpoint).scheme == 'https'
       Help.render_http_warning
       false
