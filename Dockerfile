@@ -6,7 +6,7 @@ WORKDIR /deployer
 
 ENV PATH=/deployer/bin:$PATH
 
-RUN curl -f -O https://storage.googleapis.com/kubernetes-release/release/v1.6.0/bin/linux/amd64/kubectl
+RUN curl -f -O https://storage.googleapis.com/kubernetes-release/release/v1.7.3/bin/linux/amd64/kubectl
 RUN chmod +x kubectl
 RUN mkdir bin
 RUN mv kubectl bin/kubectl
