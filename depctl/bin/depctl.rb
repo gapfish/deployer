@@ -118,6 +118,10 @@ HELP
       puts 'DEPLOYER_URL="my-deployer.me.com"'
       puts
     end
+
+    def render_http_warning
+      puts "WARNING: You're using just http and no secure connection!"
+    end
   end
 end
 
@@ -172,7 +176,7 @@ class Api
     def request(method, path)
       uri = URI.parse(endpoint + path)
       http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
+      http.use_ssl = true if is_https
       case method
       when :get
         request = Net::HTTP::Get.new(uri.request_uri, info_headers)
@@ -184,6 +188,12 @@ class Api
       request.basic_auth('auth_token', token)
       puts "#{method.upcase} #{uri}"
       wait_for { http.request(request) }
+    end
+
+    def is_https
+      return true if URI.parse(endpoint).scheme == 'https'
+      Help.render_http_warning
+      false
     end
 
     def wait_for
