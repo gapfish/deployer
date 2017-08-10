@@ -121,6 +121,22 @@ RSpec.describe 'depctl' do
   end
 
   describe Api do
+    describe '#token' do
+      let(:env_file_path) { 'tmp/deployer_env' }
+      let(:token) { 'Hier0Kixuuphiv2yexae7ifai8pei7' }
+
+      before do
+        File.write env_file_path, <<~ENVCONTENT
+          export DEPLOYER_AUTH_TOKEN="#{token}"
+        ENVCONTENT
+        allow(Api).to receive(:env_file).and_return env_file_path
+      end
+
+      it 'recognizes tokens from env file' do
+        expect(Api.send(:token)).to eq token
+      end
+    end
+
     describe '#request' do
       let(:endpoint) { 'http://deployer.my-domain.com' }
       before { allow(Api).to receive(:endpoint).and_return endpoint }

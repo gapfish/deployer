@@ -233,7 +233,7 @@ class Api
       else
         File.
           read(env_file).
-          scan(/DEPLOYER_AUTH_TOKEN=\"([\d[a-f]]*)\"/).
+          scan(/DEPLOYER_AUTH_TOKEN=\"([\d[a-z][A-Z]]*)\"/).
           first.first
       end
     rescue Errno::ENOENT, NoMethodError # file not found or wrong format
