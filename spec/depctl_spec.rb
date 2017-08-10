@@ -119,4 +119,16 @@ RSpec.describe 'depctl' do
       ]
     end
   end
+
+  describe Api do
+    describe '#request' do
+      let(:endpoint) { 'http://deployer.my-domain.com' }
+      before { allow(Api).to receive(:endpoint).and_return endpoint }
+
+      it 'prints warning if not using https' do
+        expect(Help).to receive(:render_http_warning)
+        expect(Api.send(:https?)).to eq false
+      end
+    end
+  end
 end

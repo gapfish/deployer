@@ -22,7 +22,7 @@ Metrics/BlockLength:
     - '**/*_spec.rb'
 
 Metrics/AbcSize:
-  Max: 20
+  Max: 21
 
 Metrics/MethodLength:
   CountComments: false
