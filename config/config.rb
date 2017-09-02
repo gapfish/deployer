@@ -16,6 +16,10 @@ Config =
         {
           'name' => 'deployer',
           'github' => 'gapfish/deployer'
+        },
+        {
+          'name' => 'din-tutorial',
+          'subversion' => 'svn://localhost/din-tutorial/trunk'
         }
       ]
     )

@@ -49,10 +49,13 @@ class ConfigLoader
 end
 
 class RepoConfig
-  attr_reader :name, :github, :kube_resource
+  attr_reader :name, :github, :subversion, :kube_resource
   def initialize(repo_hash)
     @name = repo_hash.fetch 'name'
-    @github = repo_hash.fetch 'github'
+    @github = repo_hash['github']
+    @subversion = repo_hash['subversion']
+    @github || @subversion ||
+      raise("Define either subversion or github for #{@name}!")
     @kube_resource = repo_hash['kube_resource'] || 'kubernetes'
   end
 

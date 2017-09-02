@@ -15,6 +15,8 @@ RSpec.describe ConfigLoader do
         repositories:
           - name: myapp
             github: me/myapp
+          - name: legacy_app
+            subversion: svn://svn-repositories.com/legacy_app
 CONFIG
 
       File.write config_override_path, <<~CONFIG
@@ -48,6 +50,13 @@ CONFIG
 
         it 'recognizes other kube_resource' do
           expect(config.repositories.first.kube_resource).to eq 'other_folder'
+        end
+      end
+
+      describe '.subversion' do
+        it 'returns the subversion url' do
+          expect(config.repositories[1].subversion).
+            to eq 'svn://svn-repositories.com/legacy_app'
         end
       end
     end
