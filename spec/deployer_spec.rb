@@ -126,23 +126,12 @@ RSpec.describe Deployer do
           Config.repositories.find do |repo|
             repo.name == 'din-tutorial'
           end,
-          commit: '5',
-          canary: true
+          commit: '6'
         )
       end
 
       it 'returns a succes message' do
-        # expect(KubeCtl).to receive(:apply).twice do |resource|
-        #   if resource.include? 'Deployment'
-        #     expect(resource).
-        #       to include 'image:\ gapfish/sidekiq-monitoring:'\
-        #                  'k8s-80f5aedde86d7e83f7dbcec3003f9dff84cfa67f'
-        #   end
-        # end
-        # expect(KubeCtl).to receive(:delete).once do |resource|
-        #   expect(resource).to include 'sidekiq-monitoring-canary'
-        # end
-        expect(deployer.deploy_info).to eq 'din-tutorial 5 is deployed'
+        expect(deployer.deploy_info).to eq 'din-tutorial 6 is deployed'
       end
     end
   end
