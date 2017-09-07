@@ -42,6 +42,7 @@ class Help
           deploy [REPOSITORY]  Deploy a repository.
           ls                   List available repositories.
           show [REPOSITORY]    Show the repository.
+          tag                  Calculate tag for current pwd repository.
           tags [REPOSITORY]    List tags for a repository.
           ------------------------------------------------------------------------
           help [(tags|deploy|canary)] Prints help for the command.
@@ -412,6 +413,8 @@ def depctl(args)
     List.cmd cmd_args
   when 'show'
     Show.cmd cmd_args
+  when 'tag'
+    puts Env.tag
   when 'tags'
     Tags.cmd cmd_args
   when 'deploy'

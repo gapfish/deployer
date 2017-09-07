@@ -44,7 +44,7 @@ class RepoFetcher
         end
       else
         Log.debug "cloning repo #{repo.github}"
-        Git.clone_github repo
+        Git.clone_github repo.github
       end
     end
   end
@@ -66,8 +66,8 @@ class RepoFetcher
   end
 
   def in_repo
+    git_pull
     in_working_dir do
-      git_pull
       Dir.chdir dir_name do
         Log.debug "Dir.chdir #{dir_name} start"
         Log.debug Command.run 'pwd'
