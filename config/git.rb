@@ -7,5 +7,7 @@ Git =
   if ENV['RACK_ENV'] == 'test'
     GitCommander.new
   else
-    GitCommander.new Config.github_token
+    GitCommander.new(
+      Config.github_token, Config.gitlab_domain, Config.gitlab_token
+    )
   end
