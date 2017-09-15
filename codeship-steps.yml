@@ -49,9 +49,9 @@
     - name: deploy deployer
       service: curl
       tag: master
-      command: "sh -c 'curl --data commit=master\\&tag=$CI_BRANCH\\-$CI_COMMIT_ID https://$DEPLOYER_CREDS@deployer.k8s.gapfish.com/deployer/deploy'"
+      command: "sh -c 'curl --fail --data commit=master\\&tag=$CI_BRANCH\\-$CI_COMMIT_ID https://$DEPLOYER_CREDS@deployer.k8s.gapfish.com/deployer/deploy'"
 
     - name: deploy deployer staging
       service: curl
       tag: staging
-      command: "sh -c 'curl --data commit=staging\\&tag=$CI_BRANCH\\-$CI_COMMIT_ID https://$DEPLOYER_CREDS_STAGING@deployer.k8s-staging.gapfish.com/deployer/deploy'"
+      command: "sh -c 'curl --fail --data commit=staging\\&tag=$CI_BRANCH\\-$CI_COMMIT_ID https://$DEPLOYER_CREDS_STAGING@deployer.k8s-staging.gapfish.com/deployer/deploy'"
