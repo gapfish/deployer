@@ -50,10 +50,10 @@ class KubeResourceFetcher
           container.fetch('image')
         end
       end
-      resources.
-        select { |resource| resource.fetch('kind') == 'Deployment' }.
-        map(&fetch_images).
-        flatten
+      modifiable = lambda do |resource|
+        %w(Deployment StatefulSet).include? resource.fetch('kind')
+      end
+      resources.select(&modifiable).map(&fetch_images).flatten
     end
   end
 end
