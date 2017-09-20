@@ -17,7 +17,8 @@ Config =
           'name' => 'deployer',
           'github' => 'gapfish/deployer'
         }
-      ]
+      ],
+      'PLUGINS' => ''
     )
   else
     ConfigLoader.new(ENV, 'config.yml', 'config.override.yml')
