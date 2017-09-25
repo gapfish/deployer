@@ -21,7 +21,7 @@ class ResourceModifier
 
   def modify_tag
     lambda do |resource|
-      if deployment? resource
+      if modifiable? resource
         resource['spec']['template']['spec']['containers'].map do |container|
           image = container.fetch('image')
           container['image'] = image + ":#{@tag}" unless tag_specified?(image)
@@ -33,7 +33,7 @@ class ResourceModifier
 
   def modify_name
     lambda do |resource|
-      if @canary == true && deployment?(resource)
+      if @canary == true && modifiable?(resource)
         name = resource['metadata']['name']
         resource['metadata']['name'] = "#{name}-canary"
       end
@@ -43,9 +43,9 @@ class ResourceModifier
 
   def modify_labels
     lambda do |resource|
-      if @canary == true && deployment?(resource)
+      if @canary == true && modifiable?(resource)
         resource['spec']['template']['metadata']['labels']['track'] = 'canary'
-      elsif @canary == false && deployment?(resource)
+      elsif @canary == false && modifiable?(resource)
         resource['spec']['template']['metadata']['labels']['track'] = 'stable'
       end
       resource
@@ -54,7 +54,7 @@ class ResourceModifier
 
   def modify_replicas
     lambda do |resource|
-      if @canary == true && deployment?(resource)
+      if @canary == true && modifiable?(resource)
         resource['spec']['replicas'] = 1
       end
       resource
@@ -63,7 +63,7 @@ class ResourceModifier
 
   def modify_env
     lambda do |resource|
-      if @canary == true && deployment?(resource)
+      if @canary == true && modifiable?(resource)
         resource['spec']['template']['spec']['containers'].map do |container|
           env = container['env']
           container['env'] =
@@ -77,8 +77,8 @@ class ResourceModifier
     image.include?(':')
   end
 
-  def deployment?(resource)
-    resource.fetch('kind') == 'Deployment'
+  def modifiable?(resource)
+    %w(Deployment StatefulSet).include? resource.fetch('kind')
   end
 
   class << self

@@ -36,6 +36,10 @@ class ConfigLoader
     @repositories = repo_hashes.map { |repo_hash| RepoConfig.new repo_hash }
   end
 
+  def plugins
+    @env['PLUGINS'].to_s.split(',') || config['plugins']
+  end
+
   private
 
   def config

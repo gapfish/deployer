@@ -21,7 +21,8 @@ Config =
           'name' => 'din-tutorial',
           'subversion' => 'svn://localhost/din-tutorial/trunk'
         }
-      ]
+      ],
+      'PLUGINS' => ''
     )
   else
     ConfigLoader.new(ENV, 'config.yml', 'config.override.yml')

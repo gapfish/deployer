@@ -414,7 +414,7 @@ def depctl(args)
   when 'show'
     Show.cmd cmd_args
   when 'tag'
-    puts Env.tag
+    print Env.tag
   when 'tags'
     Tags.cmd cmd_args
   when 'deploy'

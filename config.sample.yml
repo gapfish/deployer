@@ -4,3 +4,5 @@ repositories:
     kube_resource: kubernetes
   - name: legacy_app
     subversion: svn://svn-repositories.com/legacy_app
+plugins:
+  - bugsnag
