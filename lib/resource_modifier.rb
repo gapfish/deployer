@@ -74,7 +74,7 @@ class ResourceModifier
   end
 
   def tag_specified?(image)
-    image.include?(':')
+    !DockerImageParser.parse(image)[:tag].nil?
   end
 
   def modifiable?(resource)
@@ -84,6 +84,26 @@ class ResourceModifier
   class << self
     def clone(resource)
       Marshal.load(Marshal.dump(resource))
+    end
+  end
+end
+
+class DockerImageParser
+  def self.parse(image)
+    splitted = image.split(':')
+    case splitted.count
+    when 1 # image only
+      { image: splitted[0] }
+    when 2
+      if splitted[1].include? '/' # registry with port, but no tag
+        { image: splitted[0..1].join(':') }
+      else
+        { image: splitted[0], tag: splitted[1] }
+      end
+    when 3 # registry with port and tag
+      { image: splitted[0..1].join(':'), tag: splitted[2] }
+    else
+      raise 'parse error...'
     end
   end
 end
