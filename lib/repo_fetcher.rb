@@ -52,7 +52,6 @@ class RepoFetcher
   def in_git_commit
     in_repo do
       Git.change_ref commit do
-        Git.pull
         log_events
         yield
       end
