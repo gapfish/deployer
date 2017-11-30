@@ -8,6 +8,6 @@ Git =
     GitCommander.new
   else
     GitCommander.new(
-      Config.github_token, Config.gitlab_domain, Config.gitlab_token
+      Config.github_token, Config.git_url
     )
   end
