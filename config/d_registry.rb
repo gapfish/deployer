@@ -3,7 +3,7 @@
 require 'docker_registry2'
 
 DRegistry =
-  if ENV['RACK_ENV'] == 'test'
+  if ENV['RACK_ENV'] == 'test' || ENV['DEPLOYER_DOCKER_REGISTRY_CREDS'].nil?
     DockerRegistry.connect('https://registry.hub.docker.com')
   else
     DockerRegistry.connect(
