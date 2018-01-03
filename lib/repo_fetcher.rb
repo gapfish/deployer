@@ -42,6 +42,14 @@ class RepoFetcher
     raise exception
   end
 
+  def commit_hash
+    commit_hash = nil
+    in_repo do
+      commit_hash = Git.current_commit_hash
+    end
+    commit_hash
+  end
+
   private
 
   attr_reader :working_dir, :commit, :request_id
