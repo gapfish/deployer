@@ -59,7 +59,7 @@ class DeployServerCreator
           return 200, { message: info }.to_json
         rescue IOError => error
           # TODO: eventlog executor
-          log(request_id, ['user_agent', request.env['HTTP_USER_AGENT'].to_s])
+          log request_id, ['user_agent', request.env['HTTP_USER_AGENT'].to_s]
           log request_id, error
           log request_id, 'fail'
           EventLog.flush request_id
@@ -80,7 +80,7 @@ class DeployServerCreator
           info = deployer.deploy_info
           return 200, { message: info }.to_json
         rescue IOError => error
-          log(request_id, ['user_agent', request.env['HTTP_USER_AGENT'].to_s])
+          log request_id, ['user_agent', request.env['HTTP_USER_AGENT'].to_s]
           log request_id, error
           EventLog.flush request_id
           return 400, { error: error.message }.to_json
