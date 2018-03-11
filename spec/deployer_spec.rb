@@ -119,5 +119,20 @@ RSpec.describe Deployer do
         deployer.deploy_info
       end
     end
+
+    # context 'with subversion repository' do
+    #   let(:deployer) do
+    #     Deployer.new(
+    #       Config.repositories.find do |repo|
+    #         repo.name == 'din-tutorial'
+    #       end,
+    #       commit: '6'
+    #     )
+    #   end
+
+    #   it 'returns a succes message' do
+    #     expect(deployer.deploy_info).to eq 'din-tutorial 6 is deployed'
+    #   end
+    # end
   end
 end

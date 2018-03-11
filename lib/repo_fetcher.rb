@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require 'command'
+require 'subversion'
 require 'config/log'
+require 'config/git'
 
 class RepoFetcher
   attr_reader :repo
@@ -13,7 +15,27 @@ class RepoFetcher
     @working_dir = 'tmp'
   end
 
-  def pull
+  def in_commit
+    if git_repo?
+      in_git_commit { yield }
+    elsif svn_repo?
+      in_svn_commit { yield }
+    end
+  end
+
+  private
+
+  attr_reader :working_dir, :commit, :request_id
+
+  def git_repo?
+    !repo.github.nil?
+  end
+
+  def svn_repo?
+    !repo.subversion.nil?
+  end
+
+  def git_pull
     in_working_dir do
       if File.exist? dir_name
         Log.debug "repo #{repo.github} exists -> fetching remote"
@@ -27,7 +49,7 @@ class RepoFetcher
     end
   end
 
-  def in_commit
+  def in_git_commit
     in_repo do
       Git.change_ref commit do
         log_events
@@ -42,12 +64,8 @@ class RepoFetcher
     raise exception
   end
 
-  private
-
-  attr_reader :working_dir, :commit, :request_id
-
   def in_repo
-    pull
+    git_pull
     in_working_dir do
       Dir.chdir dir_name do
         Log.debug "Dir.chdir #{dir_name} start"
@@ -56,6 +74,18 @@ class RepoFetcher
         Log.debug "Dir.chdir #{dir_name} end"
       end
       Log.debug Command.run 'pwd'
+    end
+  end
+
+  def in_svn_commit
+    in_working_dir do
+      unless File.exist? repo.name
+        Subversion.checkout repo.subversion, repo.name
+      end
+      Dir.chdir(repo.name) do
+        Subversion.update revision: commit
+        yield
+      end
     end
   end
 

@@ -13,12 +13,8 @@ class ConfigLoader
     @env['DEPLOYER_GITHUB_TOKEN'] || config['github_token']
   end
 
-  def gitlab_domain
-    @env['DEPLOYER_GITLAB_DOMAIN'] || config['gitlab_domain']
-  end
-
-  def gitlab_token
-    @env['DEPLOYER_GITLAB_TOKEN'] || config['gitlab_token']
+  def git_url
+    @env['DEPLOYER_GIT_URL'] || config['git_url']
   end
 
   def auth_token
@@ -61,10 +57,13 @@ class ConfigLoader
 end
 
 class RepoConfig
-  attr_reader :name, :github, :kube_resource
+  attr_reader :name, :github, :subversion, :kube_resource
   def initialize(repo_hash)
     @name = repo_hash.fetch 'name'
-    @github = repo_hash.fetch 'github'
+    @github = repo_hash['github']
+    @subversion = repo_hash['subversion']
+    @github || @subversion ||
+      raise("Define either subversion or github for #{@name}!")
     @kube_resource = repo_hash['kube_resource'] || 'kubernetes'
   end
 

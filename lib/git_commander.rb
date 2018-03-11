@@ -3,10 +3,9 @@
 require 'command'
 
 class GitCommander
-  def initialize(github_token = nil, gitlab_domain = nil, gitlab_token = nil)
+  def initialize(github_token = nil, git_url = nil)
     @github_token = github_token
-    @gitlab_domain = gitlab_domain
-    @gitlab_token = gitlab_token
+    @git_url = git_url
   end
 
   def change_ref(reference)
@@ -88,9 +87,8 @@ class GitCommander
       if @github_token
         " -c url.https://#{@github_token}:x-oauth-basic@"\
           'github.com/.insteadof=https://github.com/'
-      elsif @gitlab_domain && @gitlab_token
-        " -c url.https://gitlab-ci-token:#{@gitlab_token}@"\
-        "#{@gitlab_domain}/.insteadof=https://github.com/"
+      elsif @git_url
+        " -c url.#{@git_url}.insteadof=https://github.com/"
       else
         ''
       end

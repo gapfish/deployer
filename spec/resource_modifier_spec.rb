@@ -92,3 +92,32 @@ DEPLOY
     end
   end
 end
+
+RSpec.describe DockerImageParser do
+  {
+    'schasse/echo-host' =>
+    { image: 'schasse/echo-host' },
+
+    'schasse/echo-host:mytag' =>
+    { image: 'schasse/echo-host', tag: 'mytag' },
+
+    'schasse/echo-host:87678789' =>
+    { image: 'schasse/echo-host', tag: '87678789' },
+
+    'gapfish/deployer:v1.0.1' =>
+    { image: 'gapfish/deployer', tag: 'v1.0.1' },
+
+    'registry.me.com/gapfish/deployer:v1.0.1' =>
+    { image: 'registry.me.com/gapfish/deployer', tag: 'v1.0.1' },
+
+    'registry.me.com:80/gapfish/deployer:v1.0.1' =>
+    { image: 'registry.me.com:80/gapfish/deployer', tag: 'v1.0.1' },
+
+    'registry.me.com:80/gapfish/deployer' =>
+    { image: 'registry.me.com:80/gapfish/deployer' }
+  }.each do |image, parse_result|
+    it 'returns the expected' do
+      expect(DockerImageParser.parse(image)).to eq parse_result
+    end
+  end
+end
