@@ -11,3 +11,5 @@ codeship.aes
 !.env.sample
 !.env.codeship.encrypted
 credentials/*
+*.swp
+*~
