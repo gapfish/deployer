@@ -56,7 +56,7 @@ class KubeResourceFetcher
       containers = resource.dig('spec', 'template', 'spec', 'containers')
       if resource_kind == 'CronJob'
         containers = resource.dig('spec', 'jobTemplate', 'spec', 'template',
-                     'spec', 'containers')
+                                  'spec', 'containers')
       end
       containers.map do |container|
         container.fetch('image')
