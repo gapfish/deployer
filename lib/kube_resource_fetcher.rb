@@ -45,15 +45,22 @@ class KubeResourceFetcher
   class << self
     # NOTE: just for testing purposes this is a class method
     def images(resources)
-      fetch_images = lambda do |resource|
-        resource['spec']['template']['spec']['containers'].map do |container|
+      resources.map do |resource|
+        resource_kind = resource.fetch('kind')
+        next unless %w(Deployment StatefulSet CronJob).include? resource_kind
+        fetch_images(resource_kind, resource)
+      end.compact.flatten
+    end
+
+    def fetch_images(resource_kind, resource)
+      containers = resource.dig('spec', 'template', 'spec', 'containers')
+      if resource_kind == 'CronJob'
+        containers = resource.dig('spec', 'jobTemplate', 'spec', 'template',
+              'spec', 'containers')
+      end
+      containers.map do |container|
           container.fetch('image')
-        end
       end
-      modifiable = lambda do |resource|
-        %w(Deployment StatefulSet CronJob).include? resource.fetch('kind')
-      end
-      resources.select(&modifiable).map(&fetch_images).flatten
     end
   end
 end
