@@ -144,7 +144,6 @@ DEPLOY
           expect(image).to eq 'gapfish/deployer'
         end
       end
-
     end
   end
 end
