@@ -78,7 +78,7 @@ class ResourceModifier
   end
 
   def modifiable?(resource)
-    %w(Deployment StatefulSet).include? resource.fetch('kind')
+    %w(Deployment StatefulSet CronJob).include? resource.fetch('kind')
   end
 
   class << self

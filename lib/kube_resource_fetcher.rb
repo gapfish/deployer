@@ -51,7 +51,7 @@ class KubeResourceFetcher
         end
       end
       modifiable = lambda do |resource|
-        %w(Deployment StatefulSet).include? resource.fetch('kind')
+        %w(Deployment StatefulSet CronJob).include? resource.fetch('kind')
       end
       resources.select(&modifiable).map(&fetch_images).flatten
     end

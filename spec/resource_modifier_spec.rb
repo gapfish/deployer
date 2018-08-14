@@ -44,7 +44,7 @@ DEPLOY
       let(:resource) do
         YAML.safe_load <<~DEPLOY
           apiVersion: extensions/v1beta1
-          kind: Deployment
+          kind: CronJob
           metadata:
             name: deployer
           spec:
@@ -69,26 +69,82 @@ DEPLOY
         expect(image).to eq "gapfish/deployer:#{tag}"
       end
 
-      context 'with canary == true' do
+      modifiables = %w(Deployment StatefulSet CronJob)
+      modifiables.each do | resource_kind |
+        context "with canary == true and resource kind: #{resource_kind}" do
+          let(:resource) do
+            YAML.safe_load <<~DEPLOY
+              apiVersion: extensions/v1beta1
+              kind: #{resource_kind}
+              metadata:
+                name: deployer
+              spec:
+                replicas: 2
+                strategy:
+                  type: RollingUpdate
+                template:
+                  metadata:
+                    labels:
+                      app: deployer
+                  spec:
+                    containers:
+                    - name: deployer
+                      image: gapfish/deployer
+    DEPLOY
+          end
+
+          let(:modifier) { ResourceModifier.new(resource, tag, true) }
+
+          it 'makes canary changes' do
+            modified = modifier.modified_resource
+            image =
+              modified['spec']['template']['spec']['containers'].first['image']
+            name = modified['metadata']['name']
+            labels = modified['spec']['template']['metadata']['labels']
+            replicas = modified['spec']['replicas']
+            env = modified['spec']['template']['spec']['containers'].first['env']
+
+            expect(image).to eq "gapfish/deployer:#{tag}"
+            expect(name).to eq 'deployer-canary'
+            expect(labels['app']).to eq 'deployer'
+            expect(labels['track']).to eq 'canary'
+            expect(env).to include('name' => 'TRACK', 'value' => 'canary')
+            expect(replicas).to eq 1
+          end
+        end
+      end
+
+      context 'with a not modifiable resource' do
+        let(:resource) do
+          YAML.safe_load <<~DEPLOY
+            apiVersion: extensions/v1beta1
+            kind: ClusterRole
+            metadata:
+              name: deployer
+            spec:
+              replicas: 2
+              strategy:
+                type: RollingUpdate
+              template:
+                metadata:
+                  labels:
+                    app: deployer
+                spec:
+                  containers:
+                  - name: deployer
+                    image: gapfish/deployer
+  DEPLOY
+        end
         let(:modifier) { ResourceModifier.new(resource, tag, true) }
 
-        it 'makes canary changes' do
+        it 'does not make the changes' do
           modified = modifier.modified_resource
           image =
             modified['spec']['template']['spec']['containers'].first['image']
-          name = modified['metadata']['name']
-          labels = modified['spec']['template']['metadata']['labels']
-          replicas = modified['spec']['replicas']
-          env = modified['spec']['template']['spec']['containers'].first['env']
-
-          expect(image).to eq "gapfish/deployer:#{tag}"
-          expect(name).to eq 'deployer-canary'
-          expect(labels['app']).to eq 'deployer'
-          expect(labels['track']).to eq 'canary'
-          expect(env).to include('name' => 'TRACK', 'value' => 'canary')
-          expect(replicas).to eq 1
+          expect(image).to eq "gapfish/deployer"
         end
       end
+
     end
   end
 end
