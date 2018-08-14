@@ -74,7 +74,7 @@ DEPLOY
 
   describe '.images' do
     modifiables = %w(Deployment StatefulSet CronJob)
-    modifiables.each do | resource_kind |
+    modifiables.each do |resource_kind|
       context "with the resource kind: #{resource_kind}" do
         let(:kube_deploy) do
           YAML.safe_load <<~DEPLOY

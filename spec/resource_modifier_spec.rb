@@ -70,7 +70,7 @@ DEPLOY
       end
 
       modifiables = %w(Deployment StatefulSet CronJob)
-      modifiables.each do | resource_kind |
+      modifiables.each do |resource_kind|
         context "with canary == true and resource kind: #{resource_kind}" do
           let(:resource) do
             YAML.safe_load <<~DEPLOY
@@ -102,8 +102,8 @@ DEPLOY
             name = modified['metadata']['name']
             labels = modified['spec']['template']['metadata']['labels']
             replicas = modified['spec']['replicas']
-            env = modified['spec']['template']['spec']['containers'].first['env']
-
+            env =
+              modified['spec']['template']['spec']['containers'].first['env']
             expect(image).to eq "gapfish/deployer:#{tag}"
             expect(name).to eq 'deployer-canary'
             expect(labels['app']).to eq 'deployer'
@@ -141,7 +141,7 @@ DEPLOY
           modified = modifier.modified_resource
           image =
             modified['spec']['template']['spec']['containers'].first['image']
-          expect(image).to eq "gapfish/deployer"
+          expect(image).to eq 'gapfish/deployer'
         end
       end
 
