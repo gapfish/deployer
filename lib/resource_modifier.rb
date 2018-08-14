@@ -33,7 +33,7 @@ class ResourceModifier
 
   def modify_name
     lambda do |resource|
-      if @canary == true && has_canary_deploy?(resource)
+      if @canary == true && canary_deploy?(resource)
         name = resource['metadata']['name']
         resource['metadata']['name'] = "#{name}-canary"
       end
@@ -43,9 +43,9 @@ class ResourceModifier
 
   def modify_labels
     lambda do |resource|
-      if @canary == true && has_canary_deploy?(resource)
+      if @canary == true && canary_deploy?(resource)
         resource['spec']['template']['metadata']['labels']['track'] = 'canary'
-      elsif @canary == false && has_canary_deploy?(resource)
+      elsif @canary == false && canary_deploy?(resource)
         resource['spec']['template']['metadata']['labels']['track'] = 'stable'
       end
       resource
@@ -54,7 +54,7 @@ class ResourceModifier
 
   def modify_replicas
     lambda do |resource|
-      if @canary == true && has_canary_deploy?(resource)
+      if @canary == true && canary_deploy?(resource)
         resource['spec']['replicas'] = 1
       end
       resource
@@ -63,7 +63,7 @@ class ResourceModifier
 
   def modify_env
     lambda do |resource|
-      if @canary == true && has_canary_deploy?(resource)
+      if @canary == true && canary_deploy?(resource)
         resource['spec']['template']['spec']['containers'].map do |container|
           env = container['env']
           container['env'] =
@@ -81,14 +81,14 @@ class ResourceModifier
     %w(Deployment StatefulSet CronJob).include? resource.fetch('kind')
   end
 
-  def has_canary_deploy?(resource)
+  def canary_deploy?(resource)
     %w(Deployment StatefulSet).include? resource.fetch('kind')
   end
 
   def container_path(resource)
     if resource.fetch('kind') == 'CronJob'
       return resource.dig('spec', 'jobTemplate', 'spec', 'template',
-            'spec', 'containers')
+              'spec', 'containers')
     end
     resource.dig('spec', 'template', 'spec', 'containers')
   end

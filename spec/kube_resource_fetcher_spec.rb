@@ -73,7 +73,7 @@ DEPLOY
   end
 
   describe '.images' do
-    context "with the resource Deployment" do
+    context 'with the resource Deployment' do
       let(:kube_deploy) do
         YAML.safe_load <<~DEPLOY
           apiVersion: extensions/v1beta1
@@ -111,7 +111,7 @@ DEPLOY
       end
     end
 
-    context "with the resource CronJob" do
+    context 'with the resource CronJob' do
       let(:kube_deploy) do
         YAML.safe_load <<~DEPLOY
           apiVersion: batch/v1beta1

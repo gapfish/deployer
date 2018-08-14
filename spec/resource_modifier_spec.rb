@@ -153,7 +153,7 @@ DEPLOY
         it 'adds correct image tag' do
           modified = modifier.modified_resource
           image = modified.dig('spec', 'jobTemplate', 'spec', 'template',
-                'spec', 'containers').first['image']
+            'spec', 'containers').first['image']
           expect(image).to eq "gapfish/user-and-support:#{tag}"
         end
       end
