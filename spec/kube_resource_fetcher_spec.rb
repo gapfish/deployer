@@ -149,8 +149,7 @@ DEPLOY
       end
       it 'fetches the image with specified version' do
         kube_deploy.dig('spec', 'jobTemplate', 'spec', 'template',
-          'spec', 'containers')[0]['image'] =
-          'gapfish/sidekiq-monitoring:v1'
+        'spec', 'containers')[0]['image'] = 'gapfish/sidekiq-monitoring:v1'
         image = KubeResourceFetcher.images [kube_deploy]
         expect(image).to eq ['gapfish/sidekiq-monitoring:v1']
       end

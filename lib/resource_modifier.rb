@@ -88,7 +88,7 @@ class ResourceModifier
   def container_path(resource)
     if resource.fetch('kind') == 'CronJob'
       return resource.dig('spec', 'jobTemplate', 'spec', 'template',
-              'spec', 'containers')
+             'spec', 'containers')
     end
     resource.dig('spec', 'template', 'spec', 'containers')
   end
