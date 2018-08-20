@@ -148,7 +148,7 @@ DEPLOY
       DEPLOY
         end
 
-        let(:modifier) { ResourceModifier.new(resource, tag, true) }
+        let(:modifier) { ResourceModifier.new(resource, tag, false) }
 
         it 'adds correct image tag' do
           modified = modifier.modified_resource
