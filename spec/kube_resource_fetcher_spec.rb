@@ -73,11 +73,124 @@ DEPLOY
   end
 
   describe '.images' do
-    it 'fetches the image with specified version' do
-      kube_deploy['spec']['template']['spec']['containers'][0]['image'] =
-        'gapfish/sidekiq-monitoring:v1'
-      image = KubeResourceFetcher.images [kube_deploy]
-      expect(image).to eq ['gapfish/sidekiq-monitoring:v1']
+    context 'with the resource Deployment' do
+      let(:kube_deploy) do
+        YAML.safe_load <<~DEPLOY
+          apiVersion: extensions/v1beta1
+          kind: Deployment
+          metadata:
+            name: sidekiq-monitoring
+          spec:
+            replicas: 1
+            template:
+              metadata:
+                labels:
+                  pod: sidekiq-monitoring
+              spec:
+                containers:
+                - name: sidekiq-monitoring
+                  image: gapfish/sidekiq-monitoring
+                  ports:
+                  - containerPort: 9292
+                  env:
+                  - name: RACK_ENV
+                    value: production
+                  - name: REDIS_SENTINEL_SERVICE
+                    value: redis-sentinel
+
+                  resources:
+                    requests:
+                      cpu: 10m
+    DEPLOY
+      end
+      it 'fetches the image with specified version' do
+        kube_deploy['spec']['template']['spec']['containers'][0]['image'] =
+          'gapfish/sidekiq-monitoring:v1'
+        image = KubeResourceFetcher.images [kube_deploy]
+        expect(image).to eq ['gapfish/sidekiq-monitoring:v1']
+      end
+    end
+
+    context 'with the resource CronJob' do
+      let(:kube_deploy) do
+        YAML.safe_load <<~DEPLOY
+          apiVersion: batch/v1beta1
+          kind: CronJob
+          metadata:
+            name: calc-liabilities
+          labels:
+            app: user-and-support
+            env: staging
+          namespace: default
+          spec:
+            schedule: "0 6 * * *"
+            jobTemplate:
+              spec:
+                template:
+                  spec:
+                    containers:
+                    - name: calc-liabilities
+                      image: gapfish/user-and-support
+                      imagePullPolicy: Always
+                      command: ["script/user_and_support/calc_liabilities.sh"]
+                      env:
+                      - name: RAILS_ENV
+                        value: staging
+                      volumeMounts:
+                        - name: secret
+                          mountPath: /user-and-support/config/secret.yml
+                          subPath: secret.yml
+                    volumes:
+                      - name: secret
+                        secret:
+                          secretName: user-and-support-secret
+                    restartPolicy: OnFailure
+    DEPLOY
+      end
+      it 'fetches the image with specified version' do
+        kube_deploy.dig(
+          'spec', 'jobTemplate', 'spec', 'template',
+          'spec', 'containers'
+        )[0]['image'] = 'gapfish/sidekiq-monitoring:v1'
+        image = KubeResourceFetcher.images [kube_deploy]
+        expect(image).to eq ['gapfish/sidekiq-monitoring:v1']
+      end
+    end
+
+    context 'with a not modifiable resource' do
+      let(:kube_deploy) do
+        YAML.safe_load <<~DEPLOY
+          apiVersion: extensions/v1beta1
+          kind: ClusterRole
+          metadata:
+            name: sidekiq-monitoring
+          spec:
+            replicas: 1
+            template:
+              metadata:
+                labels:
+                  pod: sidekiq-monitoring
+              spec:
+                containers:
+                - name: sidekiq-monitoring
+                  image: gapfish/sidekiq-monitoring
+                  ports:
+                  - containerPort: 9292
+                  env:
+                  - name: RACK_ENV
+                    value: production
+                  - name: REDIS_SENTINEL_SERVICE
+                    value: redis-sentinel
+
+                  resources:
+                    requests:
+                      cpu: 10m
+    DEPLOY
+      end
+      it 'returns empty' do
+        images = KubeResourceFetcher.images [kube_deploy]
+        expect(images.empty?).to be_truthy
+      end
     end
   end
 end
