@@ -46,7 +46,7 @@ RSpec.describe Command do
           expect("that we don't get here because IOError was raised").
             to be true # this expectation is always false
         rescue IOError => error
-          expect(error.message).to eq "sh: 1: wtf: not found\n"
+          expect(error.message).to eq "sh: wtf: not found\n"
         end
       end
     end
