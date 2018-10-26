@@ -1,4 +1,4 @@
-FROM ruby:2.4.2
+FROM ruby:2.4.5-alpine
 
 ENV LANG=C.UTF-8
 
@@ -6,16 +6,19 @@ WORKDIR /deployer
 
 ENV PATH=/deployer/bin:$PATH
 
-RUN curl -f -O https://storage.googleapis.com/kubernetes-release/release/v1.7.3/bin/linux/amd64/kubectl
-RUN chmod +x kubectl
+RUN apk add --no-cache --update curl git
+
 RUN mkdir bin
-RUN mv kubectl bin/kubectl
+RUN curl -f https://storage.googleapis.com/kubernetes-release/release/v1.7.3/bin/linux/amd64/kubectl > bin/kubectl && \
+    chmod +x bin/kubectl
 
 COPY Gemfile .
 COPY Gemfile.lock .
 RUN mkdir vendor
 COPY vendor/cache vendor/cache
-RUN bundle install --local
+RUN apk add --virtual build-base ruby-dev && \
+    bundle install --local && \
+    apk del build-base ruby-dev
 
 COPY . .
 
