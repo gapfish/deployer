@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'deployer'
 
 RSpec.describe Deployer do
-  describe '#create' do
+  describe '#deploy_info' do
     let(:deployer) do
       Deployer.new(
         Config.repositories.find do |repo|
@@ -99,6 +99,31 @@ RSpec.describe Deployer do
         expect { deployer.deploy_info }.
           to raise_error IOError, 'cannot determine the tag for '\
                                   'repo sidekiq-monitoring and commit blabla'
+      end
+    end
+
+    context 'with master as commit' do
+      let(:commit) { 'master' }
+      let(:deployer) do
+        Deployer.new(
+          Config.repositories.find do |repo|
+            repo.name == 'sidekiq-monitoring'
+          end,
+          commit: commit
+        )
+      end
+
+      it 'deploys  the current master reference instead of master' do
+        expect(KubeCtl).to receive(:apply).twice do |resource|
+          if resource.include? 'Deployment'
+            expect(resource).
+              to include 'image:\ gapfish/sidekiq-monitoring:'\
+                         'k8s-80f5aedde86d7e83f7dbcec3003f9dff84cfa67f'
+          end
+        end
+        expect(deployer.deploy_info).
+          to eq 'sidekiq-monitoring '\
+                'k8s-80f5aedde86d7e83f7dbcec3003f9dff84cfa67f is deployed'
       end
     end
 

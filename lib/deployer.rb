@@ -96,9 +96,15 @@ class Deployer
   def commit_to_deploy
     return @commit_to_deploy unless @commit_to_deploy.nil?
     _, tag_commit = tag&.scan(/([\w]*)-([\d[a-f]]*)/)&.first
-    @commit_to_deploy = commit || tag_commit
+    @commit_to_deploy = commit_hash || tag_commit
     EventLog.log request_id, ['commit', @commit_to_deploy]
     @commit_to_deploy
+  end
+
+  def commit_hash
+    return commit if commit != 'master'
+    RepoFetcher.new(repo, commit: 'master', request_id: request_id).
+      commit_hash
   end
 
   def tag_to_deploy
