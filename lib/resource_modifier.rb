@@ -48,6 +48,7 @@ class ResourceModifier
       elsif @canary == false && deployment?(resource)
         resource['spec']['template']['metadata']['labels']['track'] = 'stable'
       end
+      resource['spec']['template']['metadata']['labels']['tag'] = "#{@tag}"
       resource
     end
   end

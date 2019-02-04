@@ -38,6 +38,12 @@ DEPLOY
           modified['spec']['template']['spec']['containers'].first['image']
         expect(image).to eq 'gapfish/deployer:v1.0.1'
       end
+
+      it 'adds a tag label' do
+        modified = modifier.modified_resource
+        expect(modified['spec']['template']['metadata']['labels']['tag']).
+          to eq tag
+      end
     end
 
     context 'with unspecified image tag' do
@@ -67,6 +73,12 @@ DEPLOY
         image =
           modified['spec']['template']['spec']['containers'].first['image']
         expect(image).to eq "gapfish/deployer:#{tag}"
+      end
+
+      it 'adds a tag label' do
+        modified = modifier.modified_resource
+        expect(modified['spec']['template']['metadata']['labels']['tag']).
+          to eq tag
       end
 
       context 'with canary == true and resource kind: Deployment' do
@@ -108,6 +120,12 @@ DEPLOY
           expect(labels['track']).to eq 'canary'
           expect(env).to include('name' => 'TRACK', 'value' => 'canary')
           expect(replicas).to eq 1
+        end
+
+        it 'adds a tag label' do
+          modified = modifier.modified_resource
+          expect(modified['spec']['template']['metadata']['labels']['tag']).
+            to eq tag
         end
       end
 
@@ -155,6 +173,12 @@ DEPLOY
           image = modified.dig('spec', 'jobTemplate', 'spec', 'template',
                                'spec', 'containers').first['image']
           expect(image).to eq "gapfish/user-and-support:#{tag}"
+        end
+
+        it 'adds a tag label' do
+          modified = modifier.modified_resource
+          expect(modified['spec']['template']['metadata']['labels']['tag']).
+            to eq tag
         end
       end
 
