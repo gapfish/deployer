@@ -37,7 +37,7 @@ RSpec.describe DeployServerCreator do
       get '/version'
       expect(last_response).to be_ok
       version = JSON.parse(last_response.body)['version']
-      branch, commit = version.split('-')
+      branch, commit = version.match(/(.*)-([^-]+)\z/).captures
       expect(branch).to_not be_nil
       expect(commit).to match(/\A[0-9a-f]{40}\z/)
     end
