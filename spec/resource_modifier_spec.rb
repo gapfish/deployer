@@ -41,8 +41,7 @@ DEPLOY
 
       it 'adds a tag label' do
         modified = modifier.modified_resource
-        expect(modified['metadata']['labels']['tag']).
-          to eq tag
+        expect(modified['metadata']['labels']['tag']).to eq tag
       end
     end
 
@@ -77,8 +76,7 @@ DEPLOY
 
       it 'adds a tag label' do
         modified = modifier.modified_resource
-        expect(modified['metadata']['labels']['tag']).
-          to eq tag
+        expect(modified['metadata']['labels']['tag']).to eq tag
       end
 
       context 'with canary == true and resource kind: Deployment' do
@@ -124,8 +122,7 @@ DEPLOY
 
         it 'adds a tag label' do
           modified = modifier.modified_resource
-          expect(modified['metadata']['labels']['tag']).
-            to eq tag
+          expect(modified['metadata']['labels']['tag']).to eq tag
         end
       end
 
@@ -177,8 +174,7 @@ DEPLOY
 
         it 'adds a tag label' do
           modified = modifier.modified_resource
-          expect(modified['metadata']['labels']['tag']).
-            to eq tag
+          expect(modified['metadata']['labels']['tag']).to eq tag
         end
       end
 
