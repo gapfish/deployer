@@ -30,7 +30,7 @@ class RepoTags
   def images
     @images ||= KubeResourceFetcher.new(repo, commit: commit).images
   rescue IOError => error
-    if error.message.include? 'did not match any file(s) known to git.'
+    if error.message.include? 'did not match any file(s) known to git'
       raise IOError, "cannot determine the tag for repo #{repo.name} "\
                      "and commit #{commit}"
     end
