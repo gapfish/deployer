@@ -11,6 +11,7 @@ class ResourceModifier
   def modified_resource
     @original_resource.
       tap(&modify_tag).
+      tap(&modify_tag_label).
       tap(&modify_name).
       tap(&modify_labels).
       tap(&modify_replicas).
@@ -41,6 +42,15 @@ class ResourceModifier
     end
   end
 
+  def modify_tag_label
+    lambda do |resource|
+      resource['metadata'] ||= {}
+      resource['metadata']['labels'] ||= {}
+      resource['metadata']['labels']['tag'] = @tag.to_s
+      resource
+    end
+  end
+
   def modify_labels
     lambda do |resource|
       if @canary == true
@@ -48,7 +58,6 @@ class ResourceModifier
       elsif @canary == false && deployment?(resource)
         resource['spec']['template']['metadata']['labels']['track'] = 'stable'
       end
-      resource['spec']['template']['metadata']['labels']['tag'] = "#{@tag}"
       resource
     end
   end

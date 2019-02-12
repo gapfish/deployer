@@ -41,7 +41,7 @@ DEPLOY
 
       it 'adds a tag label' do
         modified = modifier.modified_resource
-        expect(modified['spec']['template']['metadata']['labels']['tag']).
+        expect(modified['metadata']['labels']['tag']).
           to eq tag
       end
     end
@@ -77,7 +77,7 @@ DEPLOY
 
       it 'adds a tag label' do
         modified = modifier.modified_resource
-        expect(modified['spec']['template']['metadata']['labels']['tag']).
+        expect(modified['metadata']['labels']['tag']).
           to eq tag
       end
 
@@ -124,7 +124,7 @@ DEPLOY
 
         it 'adds a tag label' do
           modified = modifier.modified_resource
-          expect(modified['spec']['template']['metadata']['labels']['tag']).
+          expect(modified['metadata']['labels']['tag']).
             to eq tag
         end
       end
@@ -177,7 +177,7 @@ DEPLOY
 
         it 'adds a tag label' do
           modified = modifier.modified_resource
-          expect(modified['spec']['template']['metadata']['labels']['tag']).
+          expect(modified['metadata']['labels']['tag']).
             to eq tag
         end
       end
