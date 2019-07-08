@@ -1,5 +1,4 @@
-FROM ruby:2.4.0-slim
-RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
+FROM ruby:2.6.3-slim
 RUN apt-get update && apt-get install -y git
 COPY depctl/bin/depctl.rb /usr/local/bin/
 COPY depctl/lib/trollop.rb /usr/local/lib/
