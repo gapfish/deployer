@@ -9,7 +9,7 @@ ENV PATH=/deployer/bin:$PATH
 RUN apk add --no-cache --update curl git
 
 RUN mkdir bin
-RUN curl -f https://storage.googleapis.com/kubernetes-release/release/v1.7.3/bin/linux/amd64/kubectl > bin/kubectl && \
+RUN curl -f https://storage.googleapis.com/kubernetes-release/release/v1.15.0/bin/linux/amd64/kubectl > bin/kubectl && \
     chmod +x bin/kubectl
 
 COPY Gemfile .
