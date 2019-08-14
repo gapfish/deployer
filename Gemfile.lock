@@ -6,7 +6,7 @@ GEM
     diff-lcs (1.2.5)
     docker_registry2 (0.3.0)
       rest-client (>= 1.8.0)
-    domain_name (0.5.20180417)
+    domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.1.1)
     http-cookie (1.0.3)
@@ -52,7 +52,7 @@ GEM
     timecop (0.8.1)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.5)
+    unf_ext (0.0.7.6)
 
 PLATFORMS
   ruby
