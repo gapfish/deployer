@@ -48,7 +48,7 @@ GEM
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
     slop (3.6.0)
-    tilt (2.0.6)
+    tilt (2.0.9)
     timecop (0.8.1)
     unf (0.1.4)
       unf_ext
