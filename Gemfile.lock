@@ -2,13 +2,13 @@ GEM
   remote: https://rubygems.org/
   specs:
     bugsnag (5.2.0)
-    coderay (1.1.1)
+    coderay (1.1.2)
     diff-lcs (1.2.5)
     docker_registry2 (0.3.0)
       rest-client (>= 1.8.0)
-    domain_name (0.5.20180417)
+    domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    dotenv (2.1.1)
+    dotenv (2.1.2)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     method_source (0.8.2)
@@ -20,7 +20,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    puma (3.7.0)
+    puma (3.7.1)
     rack (1.6.11)
     rack-protection (1.5.5)
       rack
@@ -48,11 +48,11 @@ GEM
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
     slop (3.6.0)
-    tilt (2.0.6)
+    tilt (2.0.9)
     timecop (0.8.1)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.5)
+    unf_ext (0.0.7.6)
 
 PLATFORMS
   ruby
