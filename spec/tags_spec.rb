@@ -3,22 +3,39 @@
 require 'spec_helper'
 require 'tags'
 
-def mock_docker_registry
-  raw_body =
-    '{"name":"gapfish/sidekiq-monitoring","tags":["k8s","latest"]}' + "\n"
-  allow(DRegistry).
-    to receive(:doget).
-    with('/v2/gapfish/sidekiq-monitoring/tags/list').
-    and_return double(body: raw_body)
+def mock_registry(klass)
+  allow(klass).
+    to receive(:tags).
+    with('gapfish/sidekiq-monitoring').
+    and_return(
+      'name' => 'gapfish/sidekiq-monitoring',
+      'tags' => %w(k8s latest)
+    )
 end
 
 RSpec.describe ImageTags do
   let(:tags) { ImageTags.new 'gapfish/sidekiq-monitoring' }
-  before { mock_docker_registry }
+  before { mock_registry DRegistry }
 
   describe '#count' do
     it 'lists the first 10 available tags' do
       expect(tags.count).to be_positive
+    end
+  end
+
+  describe '#names' do
+    it 'returns the tag names' do
+      names = ImageTags.new('gapfish/sidekiq-monitoring').names
+      expect(names).to eq %w(k8s latest)
+    end
+
+    context 'with quay.io image' do
+      before { mock_registry QRegistry }
+
+      it 'returns the tag names from quay.io' do
+        names = ImageTags.new('quay.io/gapfish/sidekiq-monitoring').names
+        expect(names).to eq %w(k8s latest)
+      end
     end
   end
 end
@@ -26,7 +43,7 @@ end
 RSpec.describe RepoTags do
   before do
     allow(RepoTags).to receive(:sleep)
-    mock_docker_registry
+    mock_registry DRegistry
   end
 
   let(:images) { ['gapfish/sidekiq-monitoring'] }

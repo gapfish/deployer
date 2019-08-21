@@ -112,7 +112,7 @@ DEPLOY
     end
 
     context 'with the resource CronJob' do
-      let(:kube_deploy) do
+      let(:cronjob) do
         YAML.safe_load <<~DEPLOY
           apiVersion: batch/v1beta1
           kind: CronJob
@@ -148,17 +148,17 @@ DEPLOY
     DEPLOY
       end
       it 'fetches the image with specified version' do
-        kube_deploy.dig(
+        cronjob.dig(
           'spec', 'jobTemplate', 'spec', 'template',
           'spec', 'containers'
         )[0]['image'] = 'gapfish/sidekiq-monitoring:v1'
-        image = KubeResourceFetcher.images [kube_deploy]
+        image = KubeResourceFetcher.images [cronjob]
         expect(image).to eq ['gapfish/sidekiq-monitoring:v1']
       end
     end
 
     context 'with a not modifiable resource' do
-      let(:kube_deploy) do
+      let(:cluster_role) do
         YAML.safe_load <<~DEPLOY
           apiVersion: extensions/v1beta1
           kind: ClusterRole
@@ -188,8 +188,45 @@ DEPLOY
     DEPLOY
       end
       it 'returns empty' do
-        images = KubeResourceFetcher.images [kube_deploy]
+        images = KubeResourceFetcher.images [cluster_role]
         expect(images.empty?).to be_truthy
+      end
+    end
+
+    context 'with an image from quay.io' do
+      let(:kube_deploy) do
+        YAML.safe_load <<~DEPLOY
+          apiVersion: extensions/v1beta1
+          kind: Deployment
+          metadata:
+            name: sidekiq-monitoring
+          spec:
+            replicas: 1
+            template:
+              metadata:
+                labels:
+                  pod: sidekiq-monitoring
+              spec:
+                containers:
+                - name: sidekiq-monitoring
+                  image: quay.io/gapfish/sidekiq-monitoring
+                  ports:
+                  - containerPort: 9292
+                  env:
+                  - name: RACK_ENV
+                    value: production
+                  - name: REDIS_SENTINEL_SERVICE
+                    value: redis-sentinel
+
+                  resources:
+                    requests:
+                      cpu: 10m
+        DEPLOY
+      end
+
+      it 'returns also the registry' do
+        images = KubeResourceFetcher.images [kube_deploy]
+        expect(images).to eq ['quay.io/gapfish/sidekiq-monitoring']
       end
     end
   end
