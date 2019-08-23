@@ -2,7 +2,7 @@
 
 require 'config/log'
 require 'config/d_registry'
-require 'json'
+require 'config/q_registry'
 require 'kube_resource_fetcher'
 
 class RepoTags
@@ -77,13 +77,13 @@ class RepoTags
 end
 
 class ImageTags
-  def initialize(image)
-    @image = image
-    @page = page
+  def initialize(full_image)
+    @full_image = full_image # 'registry/org/name' or 'org/name'
   end
 
   def names
-    @names ||= parsed_response['tags']
+    Log.debug "get #{image_name} tags from registry #{registry}"
+    @names ||= registry.tags(image_name)['tags']
   end
 
   def count
@@ -92,15 +92,17 @@ class ImageTags
 
   private
 
-  attr_reader :image, :page
+  attr_reader :full_image
 
-  def parsed_response
-    JSON.parse raw_response.body
+  def registry
+    if full_image.start_with? 'quay.io'
+      QRegistry
+    else
+      DRegistry
+    end
   end
 
-  def raw_response
-    return @api_response unless @api_response.nil?
-    Log.debug "get from registry /v2/#{image}/tags/list"
-    @api_response = DRegistry.doget("/v2/#{image}/tags/list")
+  def image_name
+    full_image.sub('quay.io/', '')
   end
 end
