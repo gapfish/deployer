@@ -40,10 +40,10 @@ class DeployServerCreator
 
       post '/:repository_name/deploy' do
         request_id = request.hash
-        log request_id, 'start'
-        log request_id, 'deploy'
+        EventLog.log request_id, 'start'
+        EventLog.log request_id, 'deploy'
         repository = find_repository(params)
-        log request_id, ['repository', repository&.github]
+        EventLog.log request_id, ['repository', repository&.github]
 
         return not_found if repository.nil?
 
@@ -54,14 +54,14 @@ class DeployServerCreator
 
         begin
           info = deployer.deploy_info
-          log request_id, 'success'
+          EventLog.log request_id, 'success'
           EventLog.flush request_id
           return 200, { message: info }.to_json
         rescue IOError => error
           # TODO: eventlog executor
-          log request_id, ['user_agent', request.env['HTTP_USER_AGENT'].to_s]
-          log request_id, error
-          log request_id, 'fail'
+          EventLog.log request_id, ['user_agent', request.env['HTTP_USER_AGENT'].to_s]
+          EventLog.log request_id, error
+          EventLog.log request_id, 'fail'
           EventLog.flush request_id
           return 400, { error: error.message }.to_json
         end
@@ -80,8 +80,8 @@ class DeployServerCreator
           info = deployer.deploy_info
           return 200, { message: info }.to_json
         rescue IOError => error
-          log request_id, ['user_agent', request.env['HTTP_USER_AGENT'].to_s]
-          log request_id, error
+          EventLog.log request_id, ['user_agent', request.env['HTTP_USER_AGENT'].to_s]
+          EventLog.log request_id, error
           EventLog.flush request_id
           return 400, { error: error.message }.to_json
         end
@@ -100,10 +100,6 @@ class DeployServerCreator
         repositories.find do |repo_candidate|
           repo_candidate.name == params['repository_name']
         end
-      end
-
-      def log(request_id, message)
-        EventLog.log(request_id, message)
       end
     end
   end
