@@ -31,7 +31,9 @@ class DeployServerCreator
       end
 
       get '/:repository_name' do
-        repository = find_repository(params)
+        repository = repositories.find do |repo_candidate|
+          repo_candidate.name == params['repository_name']
+        end
 
         return not_found if repository.nil?
 
@@ -42,7 +44,9 @@ class DeployServerCreator
         request_id = request.hash
         EventLog.log request_id, 'start'
         EventLog.log request_id, 'deploy'
-        repository = find_repository(params)
+        repository = repositories.find do |repo_candidate|
+          repo_candidate.name == params['repository_name']
+        end
         EventLog.log request_id, ['repository', repository&.github]
 
         return not_found if repository.nil?
@@ -59,7 +63,9 @@ class DeployServerCreator
           return 200, { message: info }.to_json
         rescue IOError => error
           # TODO: eventlog executor
-          EventLog.log request_id, ['user_agent', request.env['HTTP_USER_AGENT'].to_s]
+          EventLog.log(
+            request_id, ['user_agent', request.env['HTTP_USER_AGENT'].to_s]
+          )
           EventLog.log request_id, error
           EventLog.log request_id, 'fail'
           EventLog.flush request_id
@@ -68,7 +74,9 @@ class DeployServerCreator
       end
 
       post '/:repository_name/deploy_canary' do
-        repository = find_repository(params)
+        repository = repositories.find do |repo_candidate|
+          repo_candidate.name == params['repository_name']
+        end
 
         return not_found if repository.nil?
 
@@ -80,7 +88,9 @@ class DeployServerCreator
           info = deployer.deploy_info
           return 200, { message: info }.to_json
         rescue IOError => error
-          EventLog.log request_id, ['user_agent', request.env['HTTP_USER_AGENT'].to_s]
+          EventLog.log(
+            request_id, ['user_agent', request.env['HTTP_USER_AGENT'].to_s]
+          )
           EventLog.log request_id, error
           EventLog.flush request_id
           return 400, { error: error.message }.to_json
@@ -88,18 +98,14 @@ class DeployServerCreator
       end
 
       get '/:repository_name/tags' do
-        repository = find_repository(params)
+        repository = repositories.find do |repo_candidate|
+          repo_candidate.name == params['repository_name']
+        end
 
         return not_found if repository.nil?
 
         tags = RepoTags.new(repository, 'master')
         return 200, { count: tags.count, names: tags.names }.to_json
-      end
-
-      def find_repository(params)
-        repositories.find do |repo_candidate|
-          repo_candidate.name == params['repository_name']
-        end
       end
     end
   end
