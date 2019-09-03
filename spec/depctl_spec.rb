@@ -9,7 +9,7 @@ WebMock.allow_net_connect!
 RSpec.describe 'depctl' do
   before do
     WebMock.disable_net_connect!
-    allow(Api).to receive(:endpoint).and_return 'https://deployer.de'
+    allow(Api).to receive(:parsed_endpoint).and_return 'https://deployer.de'
     allow(Api).to receive(:token).and_return 'secret_t0ken'
   end
 
@@ -163,11 +163,11 @@ RSpec.describe 'depctl' do
 
     describe '#request' do
       let(:endpoint) { 'http://deployer.my-domain.com' }
-      before { allow(Api).to receive(:endpoint).and_return endpoint }
+      before { allow(Api).to receive(:parsed_endpoint).and_return endpoint }
 
       it 'prints warning if not using https' do
         expect(Help).to receive(:render_http_warning)
-        expect(Api.send(:https?)).to eq false
+        Api.send :endpoint
       end
     end
   end
