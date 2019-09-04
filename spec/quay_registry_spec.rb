@@ -6,7 +6,7 @@ require 'quay_registry'
 RSpec.describe QuayRegistry do
   let(:registry) { QuayRegistry.new 'some_token' }
   before { WebMock.disable_net_connect! }
-  after { WebMock.disable_net_connect! }
+  after { WebMock.allow_net_connect! }
 
   describe '#tags' do
     context 'with pagination' do
