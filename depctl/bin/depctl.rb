@@ -4,8 +4,10 @@
 require 'net/http'
 require 'json'
 require 'yaml'
+require 'base64'
 require_relative '../lib/trollop'
 require_relative '../lib/version'
+require_relative '../lib/hyper_texter'
 
 class Help
   class << self
@@ -148,24 +150,27 @@ class Env
   end
 
   def self.deployer_version
-    JSON.parse(Api.get('/version').body)['version']
+    Api.get('/version').body['version']
   end
 end
 
 class Api
   class << self
     def get(path)
-      request :get, path
+      wait_for do
+        HyperTexter.response_of :get, endpoint, path, {}, headers
+      end
     end
 
     def post(path)
-      request :post, path
+      wait_for do
+        HyperTexter.response_of :post, endpoint, path, {}, headers
+      end
     end
 
     def render(response)
       puts "#{response.code} #{response.class}" unless response.code == '200'
-      parsed_response = JSON.parse(response.body)
-      puts YAML.dump parsed_response
+      puts YAML.dump response.body
     rescue JSON::ParserError
       puts response.body
     ensure
@@ -173,29 +178,6 @@ class Api
     end
 
     private
-
-    def request(method, path)
-      uri = URI.parse(endpoint + path)
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if https?
-      case method
-      when :get
-        request = Net::HTTP::Get.new(uri.request_uri, info_headers)
-      when :post
-        request = Net::HTTP::Post.new(uri.request_uri, info_headers)
-      else
-        raise 'only post and get is implemented'
-      end
-      request.basic_auth('auth_token', token)
-      puts "#{method.upcase} #{uri}"
-      wait_for { http.request(request) }
-    end
-
-    def https?
-      return true if URI.parse(endpoint).scheme == 'https'
-      Help.render_http_warning
-      false
-    end
 
     def wait_for
       thread = Thread.new do
@@ -218,7 +200,7 @@ class Api
       value
     end
 
-    def endpoint
+    def parsed_endpoint
       File.
         read(env_file).
         scan(/DEPLOYER_URL=\"(.*)\"/).
@@ -226,6 +208,17 @@ class Api
     rescue Errno::ENOENT, NoMethodError # file not found or wrong format
       Help.render_config_help
       raise Interrupt
+    end
+
+    def endpoint
+      endpoint = parsed_endpoint
+      print_help_unless_https endpoint
+      endpoint
+    end
+
+    def print_help_unless_https(uri_string)
+      uri = URI.parse uri_string
+      Help.render_http_warning unless uri.scheme == 'https'
     end
 
     def token
@@ -253,10 +246,12 @@ class Api
       end
     end
 
-    def info_headers
+    def headers
+      secret = Base64.encode64 "auth_token:#{token}"
       {
         'User-Agent' => "depctl/#{Env.depctl_version}",
-        'Executor' => ENV['USER']
+        'Executor' => ENV['USER'],
+        'Authorization' => "Basic #{secret}"
       }
     end
   end

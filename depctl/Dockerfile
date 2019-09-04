@@ -3,6 +3,7 @@ RUN apt-get update && apt-get install -y git
 COPY depctl/bin/depctl.rb /usr/local/bin/
 COPY depctl/lib/trollop.rb /usr/local/lib/
 COPY lib/shared/version.rb /usr/local/lib/
+COPY lib/shared/hyper_texter.rb /usr/local/lib/
 RUN mkdir -p .git/refs/heads
 COPY .git/HEAD /usr/.git/
 COPY .git/refs/heads /usr/.git/refs/heads

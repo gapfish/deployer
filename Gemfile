@@ -17,4 +17,5 @@ group :test do
   gem 'rack-test'
   gem 'rspec'
   gem 'timecop'
+  gem 'webmock', require: false
 end

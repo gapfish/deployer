@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-require 'docker_registry2'
+require 'quay_registry'
 
 QRegistry =
   if ENV['RACK_ENV'] == 'test'
-    # DockerRegistry2.connect('https://quay.io')
-    # this will ping the registry, but with quay.io you must provide creds.
-    DockerRegistry2.connect('https://registry.hub.docker.com')
+    QuayRegistry.new 'some_token'
   else
-    user, password = ENV['DEPLOYER_QUAY_REGISTRY_CREDS']&.split ':'
-    DockerRegistry2.connect('https://quay.io', user: user, password: password)
+    token = ENV['DEPLOYER_QUAY_API_TOKEN']
+    QuayRegistry.new token
   end

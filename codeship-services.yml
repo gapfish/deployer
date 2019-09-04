@@ -13,7 +13,7 @@ depctl:
     dockerfile_path: depctl/Dockerfile
 
 ruby_code_quality_metrics:
-  image: gewo/ruby-code-quality-metrics
+  image: gapfish/ruby-code-quality-metrics:v2.1.0
   volumes:
     - .:/app
 
