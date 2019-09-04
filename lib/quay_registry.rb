@@ -11,8 +11,14 @@ class QuayRegistry
     @token = token
   end
 
-  def tags(image_name, count = nil, last = nil, page: 0)
+  def tags(image_name, count = nil, last = nil)
     raise "count and last not implemented" unless count.nil? && last.nil?
+    { 'name' => image_name, 'tags' => all_tags_from_quay(image_name) }
+  end
+
+  private
+
+  def all_tags_from_quay(image_name, page: 0)
     response =
       HyperTexter.response_of(
         :get, ENDPOINT,
@@ -25,7 +31,7 @@ class QuayRegistry
     if tag_names.size == 0
       tag_names
     else
-      tag_names + tags(image_name, page: page + 1)
+      tag_names + all_tags_from_quay(image_name, page: page + 1)
     end
   end
 

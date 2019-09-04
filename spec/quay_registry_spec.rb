@@ -40,7 +40,8 @@ RSpec.describe QuayRegistry do
       end
 
       it 'returns the all tags nicely :)' do
-        expect(registry.tags('org/my_image')).to eq ['a', 'b', 'c']
+        expect(registry.tags('org/my_image')).
+          to eq 'name' => 'org/my_image', 'tags' => ['a', 'b', 'c']
       end
     end
 
