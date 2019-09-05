@@ -5,6 +5,7 @@ require 'bugsnag'
 Bugsnag.configure do |config|
   config.api_key = ENV['BUGSNAG_API_KEY']
   config.notify_release_stages = %w(production staging)
+  config.release_stage = ENV['RACK_ENV']
   config.project_root = ConfiguredSinatra.root
   ConfiguredSinatra.use Bugsnag::Rack
 end
@@ -23,7 +24,7 @@ class BugsnagErrorReceiver
   attr_reader :event_stream
 
   def receive
-    Bugsnag.notify error if error && !user_agent.start_with?('depctl')
+    Bugsnag.notify error if error && !user_agent.to_s.start_with?('depctl')
   end
 
   def error

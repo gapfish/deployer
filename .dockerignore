@@ -18,6 +18,7 @@
 !config/*
 !spec/*
 !tmp/*
+!plugins/*
 
 !.git/refs/heads/*
 !.git/HEAD

@@ -10,9 +10,9 @@ class EventStreamLogger
   end
 
   def flush(stream_id)
-    flushed_event = streams.delete stream_id
+    flushed_event_stream = streams.delete stream_id
     subscribers.each do |subscriber|
-      subscriber.receive flushed_event
+      subscriber.receive flushed_event_stream
     end
   end
 
