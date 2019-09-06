@@ -15,6 +15,8 @@ RSpec.describe ConfigLoader do
         repositories:
           - name: myapp
             github: me/myapp
+        plugins:
+          - bugsnag
 CONFIG
 
       File.write config_override_path, <<~CONFIG
@@ -61,6 +63,12 @@ CONFIG
     describe '.auth_token' do
       it 'returns a token' do
         expect(config.auth_token).to eq 'cba'
+      end
+    end
+
+    describe '.plugins' do
+      it 'returns the configured plugins' do
+        expect(config.plugins).to eq ['bugsnag']
       end
     end
 

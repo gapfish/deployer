@@ -28,7 +28,7 @@ class RepoTags
   attr_reader :repo, :commit
 
   def images
-    @images ||= KubeResourceFetcher.new(repo, commit: commit).images
+    @images ||= KubeResourceFetcher.new(repo, commit: commit).images.uniq
   rescue IOError => error
     if error.message.include? 'did not match any file(s) known to git'
       raise IOError, "cannot determine the tag for repo #{repo.name} "\

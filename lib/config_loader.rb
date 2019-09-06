@@ -37,7 +37,11 @@ class ConfigLoader
   end
 
   def plugins
-    @env['PLUGINS'].to_s.split(',') || config['plugins']
+    if !@env['DEPLOYER_PLUGINS'].nil?
+      @env['DEPLOYER_PLUGINS'].split(',')
+    else
+      config['plugins'] || []
+    end
   end
 
   private
