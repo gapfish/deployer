@@ -247,7 +247,7 @@ class Api
     end
 
     def headers
-      secret = Base64.encode64 "auth_token:#{token}"
+      secret = Base64.strict_encode64 "auth_token:#{token}"
       {
         'User-Agent' => "depctl/#{Env.depctl_version}",
         'Executor' => ENV['USER'],
