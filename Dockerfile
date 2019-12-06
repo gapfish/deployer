@@ -1,4 +1,4 @@
-FROM ruby:2.4.5-alpine
+FROM ruby:2.5.5-alpine
 
 ENV LANG=C.UTF-8
 
@@ -16,9 +16,9 @@ COPY Gemfile .
 COPY Gemfile.lock .
 RUN mkdir vendor
 COPY vendor/cache vendor/cache
-RUN apk add --virtual build-base ruby-dev && \
+RUN apk add --virtual ruby-dev g++ make && \
     bundle install --local && \
-    apk del build-base ruby-dev
+    apk del ruby-dev g++ make
 
 COPY . .
 
