@@ -25,11 +25,12 @@ class Version
   end
 
   def branch2commit
-    @branch2commit ||= Dir["#{git_folder}/refs/heads/*"].map do |file|
+    @branch2commit ||= Dir["#{git_folder}/refs/heads/**/*"].map do |file|
+      next if File.directory? file
       branch = File.basename file
       commit = File.read(file).strip
       [branch, commit]
-    end.to_h
+    end.compact.to_h
   end
 
   def head
