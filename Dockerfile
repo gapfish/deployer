@@ -1,25 +1,31 @@
-FROM ruby:2.5.5-alpine
+FROM quay.io/gapfish/ruby as builder
 
-ENV LANG=C.UTF-8
+RUN apt-get update && apt-get install -y build-essential curl
 
-WORKDIR /deployer
-
-ENV PATH=/deployer/bin:$PATH
-
-RUN apk add --no-cache --update curl git
-
-RUN mkdir bin
 RUN curl -f https://storage.googleapis.com/kubernetes-release/release/v1.15.0/bin/linux/amd64/kubectl > bin/kubectl && \
-    chmod +x bin/kubectl
+  chmod +x bin/kubectl
 
 COPY Gemfile .
 COPY Gemfile.lock .
 RUN mkdir vendor
 COPY vendor/cache vendor/cache
-RUN apk add --virtual ruby-dev g++ make && \
-    bundle install --local && \
-    apk del ruby-dev g++ make
+RUN bundle install --local
 
+
+FROM quay.io/gapfish/ruby
+
+WORKDIR /deployer
+ENV PATH=/deployer/bin:$PATH
+
+RUN apt-get update && apt-get install -y \
+  git && \
+  rm -rf /var/lib/apt/lists/*
+
+RUN mkdir bin
+COPY --from=builder bin/kubectl bin/kubectl
+
+COPY --from=builder /var/lib/gems/2.5.0 /var/lib/gems/2.5.0
+COPY --from=builder /usr/local/bin /usr/local/bin
 COPY . .
 
 EXPOSE 8080

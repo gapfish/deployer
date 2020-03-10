@@ -1,16 +1,18 @@
 deployer:
   build:
-    image: gapfish/deployer
+    image: quay.io/gapfish/deployer
     cached: true
     dockerfile_path: Dockerfile
   environment:
     - RACK_ENV=test
+  encrypted_dockercfg_path: dockercfg.codeship.encrypted
 
 depctl:
   build:
-    image: gapfish/depctl
+    image: quay.io/gapfish/depctl
     cached: true
     dockerfile_path: depctl/Dockerfile
+  encrypted_dockercfg_path: dockercfg.codeship.encrypted
 
 ruby_code_quality_metrics:
   image: gapfish/ruby-code-quality-metrics:v2.1.0
