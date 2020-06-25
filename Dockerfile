@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir bin
 COPY --from=builder bin/kubectl bin/kubectl
 
-COPY --from=builder /var/lib/gems/2.5.0 /var/lib/gems/2.5.0
+COPY --from=builder /var/lib/gems/2.7.0 /var/lib/gems/2.7.0
 COPY --from=builder /usr/local/bin /usr/local/bin
 COPY . .
 
