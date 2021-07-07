@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "config:base",
+    "docker:enableMajor"
+  ],
+  "docker": {
+    "pinDigests": true
+  },
+  "bundler": {
+    "enabled": false
+  },
+  "js": {
+    "enabled": false
+  }
+}
