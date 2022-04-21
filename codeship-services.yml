@@ -15,7 +15,8 @@ depctl:
   encrypted_dockercfg_path: dockercfg.codeship.encrypted
 
 ruby-code-quality-metrics:
-  image: gapfish/ruby-code-quality-metrics:v2.1.0
+  image: quay.io/gapfish/ruby-code-quality-metrics:v2.1.0
+  encrypted_dockercfg_path: dockercfg.codeship.encrypted
   volumes:
     - .:/app
 
