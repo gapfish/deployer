@@ -5,7 +5,7 @@
       command: rspec
 
     - name: run code quality metrics tools
-      service: ruby_code_quality_metrics
+      service: ruby-code-quality-metrics
       command: ruby
 
 - type: parallel
