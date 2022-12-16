@@ -2,7 +2,7 @@ version: "2"
 services:
   deployer:
     build: .
-    image: gapfish/deployer
+    image: quay.io/gapfish/deployer
     ports:
       - "8080:8080"
     volumes:
