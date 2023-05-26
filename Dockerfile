@@ -21,6 +21,9 @@ RUN apt-get update && apt-get install -y \
   git && \
   rm -rf /var/lib/apt/lists/*
 
+RUN mkdir -p /root/.ssh
+COPY known_hosts /root/.ssh/known_hosts
+
 RUN mkdir bin
 COPY --from=builder bin/kubectl bin/kubectl
 
