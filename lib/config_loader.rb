@@ -21,6 +21,10 @@ class ConfigLoader
     @env['DEPLOYER_GITLAB_TOKEN'] || config['gitlab_token']
   end
 
+  def ssh
+    @env['ssh'] || config['ssh']
+  end
+
   def auth_token
     return @env['DEPLOYER_AUTH_TOKEN'] unless @env['DEPLOYER_AUTH_TOKEN'].nil?
     return config['auth_token'] unless config['auth_token'].nil?
