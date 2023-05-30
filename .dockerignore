@@ -24,3 +24,4 @@
 !.git/HEAD
 
 !depctl
+!known_hosts
