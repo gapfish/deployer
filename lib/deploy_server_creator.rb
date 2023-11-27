@@ -53,7 +53,8 @@ class DeployServerCreator
 
         deployer = Deployer.new(
           repository,
-          tag: params['tag'], commit: params['commit'], request_id: request_id
+          tag: params['tag']&.shellescape,
+          commit: params['commit']&.shellescape, request_id: request_id
         )
 
         begin
@@ -81,7 +82,8 @@ class DeployServerCreator
         return not_found if repository.nil?
 
         deployer = Deployer.new(
-          repository, tag: params['tag'], commit: params['commit'], canary: true
+          repository, tag: params['tag']&.shellescape,
+          commit: params['commit']&.shellescape, canary: true
         )
 
         begin
